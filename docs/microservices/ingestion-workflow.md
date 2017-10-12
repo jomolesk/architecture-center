@@ -1,5 +1,8 @@
 # Ingestion and workflow
 
+
+
+
 ![](./images/ingestion-workflow.png)
 
 The Delivery Scheduler service is responsible for accepting user requests and executing a workflow. For each request, the workflow consists of several steps, carried out by calling the various backend services:

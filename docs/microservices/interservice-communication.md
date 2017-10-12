@@ -1,24 +1,17 @@
-# Interservice communication
+# Interservice communication in microservices
 
-
-
+When an application is decomposed into microservices, the problem arises of how one service should talk to another. In this section, we look at the tradeoffs between using asynchronous messaging between services versus calling APIs, and discuss some API design considerations. 
 
 ![](./images/interservice-communication.png)
 
+## Synchronous API or asynchronous messaging?
 
 There are two main ways that services can communicate with other services:
 
 - **Synchronously** by calling APIs on the service. 
 - **Asynchronously** by sending messages or events.   
 
-There are tradeoffs to each approach. Calling an API is a simple, well-understood paradigm. You call a method, and get a response. 
-
-
-
-
-## When to use asynchronous messaging
-
-Asynchronous message queues have some advantages that can be very useful in a microservices architecture:
+There are tradeoffs to each approach. Calling an API is a simple, well-understood paradigm. You call a method, and get a response. However, using asynchronous messages has some advantages that can be very useful in a microservices architecture:
 
 - **Reduced coupling**. The message sender does not need to know about the consumer. 
 - **Multiple subscribers**. Using a pub/sub model, multiple consumers can subscribe to receive events. See [Event-driven architecture style](/azure/architecture/guide/architecture-styles/event-driven).
