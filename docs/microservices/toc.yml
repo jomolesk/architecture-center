@@ -5,19 +5,25 @@
   items:
   - name: Introduction
     href: index.md
-  - name: Analyze the domain 
+  - name: Domain analysis
     href: domain-analysis.md
-  - name: Apply tactical DDD patterns
+  - name: Tactical DDD patterns
     href: tactical-ddd.md
+  - name: Asynchronous messaging
+    href: messaging.md
   - name: Interservice communication
     href: interservice-communication.md
   - name: Ingestion and workflow
     href: ingestion-workflow.md
   - name: API gateway
     href: gateway.md
+  - name: API design
+    href: api-design.md
   - name: Data considerations
     href: data-considerations.md
   - name: Logging and monitoring
     href: logging-monitoring.md
+  - name: Development and test processes
+    href: dev-test.md
   - name: CI/CD
     href: ci-cd.md

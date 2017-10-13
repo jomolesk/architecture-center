@@ -1,7 +1,6 @@
 # Ingestion and workflow
 
-In this section, we describe how the Drone Delivery application handles incoming client requests. This involves ingesting the requests at high volume, and then initiating a workflow for each request. The application must be able to service requests in a reliable and efficient manner, including  
-
+In this section, we describe how the Drone Delivery application handles incoming client requests. This involves ingesting the requests at high volume, and then initiating a workflow for each request. The application must be able to service requests in a reliable and efficient manner, including handling failures
 
 ![](./images/ingestion-workflow.png)
 
