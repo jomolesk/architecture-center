@@ -1,6 +1,6 @@
 # Ingestion and workflow
 
-
+In this section, we describe how the Drone Delivery application handles incoming client requests. This involves ingesting the requests at high volume, and then initiating a workflow for each request. The application must be able to service requests in a reliable and efficient manner, including  
 
 
 ![](./images/ingestion-workflow.png)
@@ -20,8 +20,6 @@ Based on business requirements, Fabrikam has identified the following non-functi
 - Sustained throughput of 10K requests/sec.
 - Handle spikes of up to 100K/sec without dropping client requests or timing out.
 - [Latency?]
-
-
 
 The requirement to handle occasional spikes in traffic presents a design challenge. In theory, the system could be scaled out to handle the maximum expected traffic. However, provisioning that many resources woud be very inefficient. Most of the time, the application will not need that much capacity, so there would be idle cores and excess database resources, costing money without adding value.
 
