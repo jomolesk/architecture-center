@@ -9,10 +9,10 @@
     href: domain-analysis.md
   - name: Tactical DDD patterns
     href: tactical-ddd.md
-  - name: Asynchronous messaging
-    href: messaging.md
   - name: Interservice communication
     href: interservice-communication.md
+  - name: Service mesh
+    href: service-mesh.md
   - name: Ingestion and workflow
     href: ingestion-workflow.md
   - name: API gateway
