@@ -16,8 +16,9 @@ If you are already familiar with DDD, you can skip this section. The patterns ar
 **Entities**. An entity is an object with a unique identity that persists over time. For example, in a banking application, customers and accounts would be entities. 
 
 - An entity has a unique identifier in the system, which can be used to look up or retrieve the entity. That doesn't mean the identifier is necessarily exposed to users. It could be a GUID or a primary key in a database. The identifier might be a composite key, especially for child entities.
+- An identity may span multiple bounded contexts, and may endure beyond the lifetime of the application. For example, bank account numbers or government-issued IDs are not tied to the lifetime of a particular application.
 - The attributes of an entity may change over time. For example, a person's name or address might change, but they are still the same person. 
-- An identity may span multiple bounded contexts, and may endure beyond the lifetime of the application. 
+- An entity can hold references to other entities.
  
 **Value objects**. A value object has no identity. It is defined only by the values of its attributes. Value objects are also immutable. To update a value object, you always create a new instance to replace the old one. Value objects can have methods that encapsulate domain logic, but those methods should have no side-effects on the object's state. Typical examples of value objects include colors, dates and times, and currency values. 
 
@@ -63,6 +64,8 @@ From these scenarios, the development team identified the following **entities**
 
 Of these, Delivery, Package, Drone, and Account are **aggregates**. Tag, Confirmation, and Notification are associated with Delivery entities. The **value objects** in this design include Location, ETA, PackageWeight, and PackageSize. 
 
+![](./images/delivery-entity.png)
+
 The development team also identified an important piece of functionality that doesn't fit neatly into any of the entities or aggregates. Some part of the system must coordinate all of the steps involved in scheduling or updating a delivery. We'll go into more detail in the topic [Ingestion and workflow](./ingestion-workflow.md), but to summarize, the development team decides to implement two **application services**:
 
 - A *Scheduler* that coordinates the steps.
@@ -102,9 +105,9 @@ What is the right size for a microservice? "Not too big and not too small" &mdas
     - To limit dependencies.
     - To use different technologies or data stores.
 
-Above all, it's important to be pragmatic, and remember that domain-driven design is an iterative process. When in doubt, start with more coarse-grained microservices. It's much easier to split apart a service later, than it is to refactor functionality across several services in production.
+Above all, it's important to be pragmatic, and remember that domain-driven design is an iterative process. When in doubt, start with more coarse-grained microservices. It's easier to split apart a service later, than it is to refactor functionality across several services in production.
     
-## Microservices in the Drone Delivery application
+## Drone Delivery microservices
 
 Recall that the development team had identified the following aggregates: Delivery, Package, Drone, and Account. The first two are part of the Shipping bounded context, while Drone and Account belong to other bounded contexts.
 

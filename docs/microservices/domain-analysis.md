@@ -4,13 +4,25 @@ When designing microservices, one of the biggest challenges is defining the boun
 
 Here are two guiding principles:
 
-- Services should be designed around business capabilities, not horizontal layers such as data access or messaging.  
-- Services should have loose coupling and high functional cohesion. 
+- Microservices should be designed around business capabilities, not horizontal layers such as data access or messaging.  
+- Microservices should have loose coupling and high functional cohesion. 
 
-Services are *loosely coupled* if you can change one service without requiring other services to be updated at the same time. Later in this guidance we will discuss techniques such API versioning, eventing, and other ways to keep services decoupled. A service is *cohesive* if it has a single, well-defined purpose, such as managing user accounts or tracking delivery history. 
+Microservices are *loosely coupled* if you can change one service without requiring other services to be updated at the same time. Later in this guidance we will discuss techniques such API versioning, eventing, and other ways to keep services decoupled. A microservice is *cohesive* if it has a single, well-defined purpose, such as managing user accounts or tracking delivery history. 
 
-However, there is no mechanical process that will produce the "right" design. You have to think deeply about your business domain, requirements, and goals. Moreover, the process is iterative and ongoing. A well-designed architecture will evolve over time. Service boundaries aren't fixed in stone. As the application evolves, you may refactor a service into several smaller services. 
+However, there is no mechanical process that will produce the "right" design. You have to think deeply about your business domain, requirements, and goals. Otherwise, you might end up with a hapharzard design that exihibits some undesireable characteristics, such as hidden dependencies between services, tight coupling, or poorly designed interfaces. 
 
+
+
+![](./images/ddd-process.png)
+
+We start by analyzing the business domain to understand the application's functional requirements. The output of this step is an informal description of the domain, which can then be refined into a more formal set of domain models. 
+
+Next, we identify the *bounded contexts* of the domain. Each bounded context will contain its own domain model that represents a particular subdomain of the larger application. 
+
+In the third step, we further refine the domain model by applying a set of DDD *patterns* such as entity, aggregate, and service. Those patterns form the basis for designing a coherent set of microservices.
+
+> [!NOTE]
+> This process is iterative and ongoing. A well-designed architecture will evolve over time. Service boundaries aren't fixed in stone. As the application evolves, you may refactor a service into several smaller services. 
 
 ## Analyze the domain
 
@@ -26,10 +38,9 @@ As you fill in the diagram, you may start of indentify discrete subdomains. Whic
 
 During this initial phase, you aren't concerned with technologies or implementation details. That said, you should note the place where the application will need to integrate with external systems, such as CRM, payment processing, or billing systems. 
 
-After an initial domain analysis, the team came up with the following diagram that depicts the domain.
+After an initial domain analysis, the team came up with the following rough sketch that depicts the domain.
 
 ![](./images/ddd1.svg) 
-
 
 - **Shipping** is placed in the center of the diagram, because it's core to the business. Everything else in the diagram exists to enable this functionality.
 - **Drone management** is also core to the business. Functionality that is closely related to drone management include **repairing drones** and using **predictive analysis** to predict when drones need servicing and maintenance. 
