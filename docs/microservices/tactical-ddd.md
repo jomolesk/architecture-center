@@ -64,9 +64,11 @@ From these scenarios, the development team identified the following **entities**
 
 Of these, Delivery, Package, Drone, and Account are **aggregates**. Tag, Confirmation, and Notification are associated with Delivery entities. The **value objects** in this design include Location, ETA, PackageWeight, and PackageSize. 
 
+To illustrate, here is a UML diagram of the Delivery aggregate. Notice that it holds references to other aggregates, including Account, Package, and Drone.
+
 ![](./images/delivery-entity.png)
 
-The development team also identified an important piece of functionality that doesn't fit neatly into any of the entities or aggregates. Some part of the system must coordinate all of the steps involved in scheduling or updating a delivery. We'll go into more detail in the topic [Ingestion and workflow](./ingestion-workflow.md), but to summarize, the development team decides to implement two **application services**:
+The development team also identified an important piece of functionality that doesn't fit neatly into any of the entities or aggregates. Some part of the system must coordinate all of the steps involved in scheduling or updating a delivery. We'll go into this topic in more detail (see [Ingestion and workflow](./ingestion-workflow.md)), but to summarize, the development team decides to implement two **application services**:
 
 - A *Scheduler* that coordinates the steps.
 - A *Supervisor* that monitors the status of each step, to detect whether any steps have failed or timed out.

@@ -7,23 +7,19 @@
     href: index.md
   - name: Domain analysis
     href: domain-analysis.md
-  - name: Tactical DDD patterns
+  - name: Tactical DDD
     href: tactical-ddd.md
-  - name: Interservice communication
-    href: interservice-communication.md
-  - name: Service mesh
-    href: service-mesh.md
   - name: Ingestion and workflow
     href: ingestion-workflow.md
-  - name: API gateway
-    href: gateway.md
+  - name: Interservice communication
+    href: interservice-communication.md
   - name: API design
     href: api-design.md
+  - name: Gateway
+    href: gateway.md
   - name: Data considerations
     href: data-considerations.md
   - name: Logging and monitoring
     href: logging-monitoring.md
-  - name: Development and test processes
-    href: dev-test.md
   - name: CI/CD
     href: ci-cd.md

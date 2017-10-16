@@ -65,7 +65,7 @@ At this point, the principles of REST over HTTP are well-defined. You may find t
 •	HATEOAS?
 -->
 
-## Mapping the patterns to REST
+## Mapping DDD patterns to REST
 
 Patterns such as entity, aggregate, and value object are designed to place certain constraints on the objects in your domain model. For example, value objects are immutable. In many discussions of DDD, the patterns are modeled using OO language concepts like constructors or property getters and setters. 
 

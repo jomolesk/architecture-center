@@ -23,10 +23,13 @@ There are tradeoffs to each approach. Calling an API is a simple, well-understoo
 However, there are also some challenges to using asychronous messaging effectively.
 
 - Using a particular messaging infrastructure may cause tight coupling with that infrastructure. It will be difficult to switch to another messaging infrastructure later.
+- End-to-end latency may be higher. 
 - The messaging infrastructure incurs additional cost. At high throughputs, the cost could become significant.
 - Handling asynchronous messaging is not a trivial task. For example, you must handle duplicated messages, either by de-duplicating or by making operations idempotent. 
 - Asynchronous messages don't work well for request-response semantics. 
 - If the messages require *queue semantics*, the queue can become a bottleneck in the system. Each message requires at least one queue oepration and one dequeue operation. Moreoever, queue semantics generally require some kind of locking inside the messaging infrastructure. If the queue is a managed service, there may be additional latency, because the queue is external to the cluster’s virtual network. You can mitigate these issues by batching messages, but that complicates the code. If the messages don't require queue semantics, you might be able to use an event *stream* instead of a queue. For more information, see [Event-driven architectural style](../guide/architecture-styles/event-driven.md).  
+
+## Communication patterns in the Drone Delivery application
 
 With these considerations in mind, the development team made the following design choices.
 
@@ -40,3 +43,28 @@ With these considerations in mind, the development team made the following desig
 - The Delivery History service subscribes to the delivery events and stores the history of every delivery. 
 
 Notice that delivery events are derived from drone events. For example, when a drone reaches a delivery location and drops off a package, the Delivery service translates this into a DeliveryCompleted event. This is an example of thinking in terms of domain models. As described earlier, Drone Management belongs in a separate bounded context. The drone events convey the physical location of a drone. The delivery events, on the other hand, represent changes in the status of a delivery, which is a different business entity.
+
+## Challenges and considerations
+
+Retry
+
+Circuit breaker
+
+Throttling
+
+Service versioning 
+
+load balancing
+
+Access control (s-to-s authentication)
+
+TLS encryption
+
+Protocol conversion?
+
+Distributed tracing 
+
+
+## Service mesh
+
+TBD

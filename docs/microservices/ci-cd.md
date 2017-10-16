@@ -1,4 +1,4 @@
-## CI/CD for microservices
+## Implementing CI/CD for microservices
 
 Continuous integration and continuous deployment (CI/CD) are a key requirement for achieving success with microservices. Without a good CI/CD process, you will not achieve the agility that microservices promise. This section describes some of the challenges of CI/CD for microservices (multiple code bases, heterogenous build environments), along with a suggested approach.
 
@@ -8,13 +8,11 @@ One of the big reasons to adopt a microservices architecture is to enable faster
 
 The release pipeline must be automated and highly reliable, so that the risks of deploying updates are minimized. If you are releasing to production daily or multiple times a day, regressions or service disruptions must be very rare. At the same time, if a bad update does get deployed, you must have a reliable way to quickly roll back to a previous version of a service.
 
+When we talk about CI/CD, we are really talking about several related processes: Continuous integration, continuous delivery, and continuous deployment.
 
-
-When we talk about CI/CD, 
-
-- Continuous integration. Code changes are frequently merged into the main branch, using automated build and test processes to ensure that  code in the main branch is always production-quality.
-- Continuous delivery. Code changes that pass the CI process are automatically published to a production-like environment. Deployment into the live production environment may require manual approval, but is otherwise automated. The goal is that your code should always be *ready* to deploy into production.
-- Continuous deployment. Code changes that pass the CI/CD process are automatically deployed into production.
+- Continuous integration means that code changes are frequently merged into the main branch, using automated build and test processes to ensure that  code in the main branch is always production-quality.
+- Continuous delivery means that code changes that pass the CI process are automatically published to a production-like environment. Deployment into the live production environment may require manual approval, but is otherwise automated. The goal is that your code should always be *ready* to deploy into production.
+- Continuous deployment means that code changes that pass the CI/CD process are automatically deployed into production.
 
 In the context of Kubernetes and microservices, CI applies to building the container images. Deployment is then a matter of pushing those images to a container registry, and then updating the Kubernetes deployment to pick up the latest images. 
 

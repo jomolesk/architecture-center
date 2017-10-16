@@ -7,11 +7,9 @@ Here are two guiding principles:
 - Microservices should be designed around business capabilities, not horizontal layers such as data access or messaging.  
 - Microservices should have loose coupling and high functional cohesion. 
 
-Microservices are *loosely coupled* if you can change one service without requiring other services to be updated at the same time. Later in this guidance we will discuss techniques such API versioning, eventing, and other ways to keep services decoupled. A microservice is *cohesive* if it has a single, well-defined purpose, such as managing user accounts or tracking delivery history. 
+Microservices are *loosely coupled* if you can change one service without requiring other services to be updated at the same time. Later in this guidance we will discuss some best practices to keep services decoupled. A microservice is *cohesive* if it has a single, well-defined purpose, such as managing user accounts or tracking delivery history. 
 
 However, there is no mechanical process that will produce the "right" design. You have to think deeply about your business domain, requirements, and goals. Otherwise, you might end up with a hapharzard design that exihibits some undesireable characteristics, such as hidden dependencies between services, tight coupling, or poorly designed interfaces. 
-
-
 
 ![](./images/ddd-process.png)
 

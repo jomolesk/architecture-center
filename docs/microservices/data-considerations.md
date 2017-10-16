@@ -18,11 +18,9 @@ This approach naturally leads to [polyglot persistence](https://martinfowler.com
 
 ## Challenges
 
-Some challenges arise from this distributed approach to managing data. First, there may be redundancy across the data stores, with the same item of data appearing in mulitple places. For example, data might be stored as part of a transaction, then stored elsewhere for analytics, reporting, or archiving. Duplicated data can lead to issues of data integrity and consistency. 
+Some challenges arise from this distributed approach to managing data. First, there may be redundancy across the data stores, with the same item of data appearing in mulitple places. For example, data might be stored as part of a transaction, then stored elsewhere for analytics, reporting, or archiving. Duplicated or partitioned data can lead to issues of data integrity and consistency. When data relationships span multiple services, you can't use traditional data management techniques to enforce the relationships.
 
-Traditional data modeling uses the rule of "one fact in one place." Every entity appears exactly once in the schema. Other entities may hold references to it but not duplicate it. The obvious advantage to the traditional approach is that updates are made in a single place. With microservices, you have to consider how updates are propaged across services. 
-
-For example, consider the case of a customer creating an order. In a monolithic application, the flow might be as follows: The front end receives a request and creates an order entry in a database. The backend queries the same database to pick up the new orders. In microservices, you would avoid this pattern. Instead, the front-end service might send a message to a back-end service. Asynchronous messaging patterns are an important way for services to share data.
+Traditional data modeling uses the rule of "one fact in one place." Every entity appears exactly once in the schema. Other entities may hold references to it but not duplicate it. The obvious advantage to the traditional approach is that updates are made in a single place, which avoids problems with data consistency. In a microservices architecture, you have to consider how updates are propaged across services, and how to manage eventual consistency when data appears in multiple places without strong consistency. 
 
 ## Approaches to managing data
 
@@ -34,13 +32,13 @@ There is no single approach that's correct in all cases, but here are some gener
 
 - For transactions, use patterns such as [Scheduler Agent Supervisor](../patterns/scheduler-agent-supervisor.md) and [Compensating Transaction](../patterns/compensating-transaction.md) to keep data consistent across several services.  You may need to store an additional piece of data that captures the state of a unit of work that spans multiple services, to avoid partial failure among multiple services. For example, keep a work item on a durable queue while a multi-step transaction is in progress. 
 
-- Avoid duplicating data unnecessarily. A service might only need to store a subset of information about a domain entity. For example, in the delivery bounded context, we need to know which customer is associated to a particular delivery. But we don't need the customer's billing address - that's handled in the Accounts bounded context. Thinking carefully about the domain, and using a DDD approach, can help here. 
+- Store only the data that a service needs. A service might only need a subset of information about a domain entity. For example, in the delivery bounded context, we need to know which customer is associated to a particular delivery. But we don't need the customer's billing address &mdash; that's managed by the Accounts bounded context. Thinking carefully about the domain, and using a DDD approach, can help here. 
 
 - Consider whether your services are coherent and loosely coupled. If two services are continually exchaning information with each other, resulting in chatty APIs, you may need to redraw your service boundaries, by merging two services or refactoring their functionality.
 
-- Use an [event driven architecture](../guide/architecture-styles/event-driven.md). In this archtecture style, a service sends an event whenever it updates its own data store. Interested services can subscribe to this event. For example, another service could use the events to construct a materialized view of the data that is more suitable for querying.
+- Use an [event driven architecture style](../guide/architecture-styles/event-driven.md). In this archtecture style, a service publishes an event there are changes to its public models or entities. Interested services can subscribe to these events. For example, another service could use the events to construct a materialized view of the data that is more suitable for querying.
 
-- A service that sends events should publish a schema that can be used to automate serializing and deserializing events. Consider JSON schema or a framework like [Microsoft Bond](https://github.com/Microsoft/bond). Think about how you will version the event schema. 
+- A service that sends events should publish a schema that can be used to automate serializing and deserializing events, to avoid tight coupling between publishers and subscribers. Consider JSON schema or a framework like [Microsoft Bond](https://github.com/Microsoft/bond), Protobuf, or Avro. Think about how you will version the event schema. 
  
 - At high scale, events can become a bottleneck on the system, so consider using aggregation or batching to reduce the total load. 
 
@@ -69,9 +67,9 @@ The Delivery History service has two main functions:
 - Enable analysis of the aggregated data, looking for patterns or trends over time, in order to opmitize the business or improve the quality of the service. (The Delivery History service doesn't perform the actual analysis of the data. It's only responsible for the ingestion and storage.)
 - Enable users to look up the history of a delivery after the delivery is completed.
 
-These two use-cases have different requirements. The first must be optimized for performing data analysis on a large set of data. Azure Data Lake Store is a good fit for this scenario. Data Lake Store is an Apache Hadoop file system compatible with Hadoop Distributed File System (HDFS), and is tuned for performance for data analytics scenarios. 
+These two use-cases have different requirements. The first must be optimized for performing data analysis on a large set of data, using a schema-on-read approach to accomodate a variety of data sources. Azure Data Lake Store is a good fit for this scenario. Data Lake Store is an Apache Hadoop file system compatible with Hadoop Distributed File System (HDFS), and is tuned for performance for data analytics scenarios. 
 
-For optimal performance in this scenario, Microsoft recommends storing the data in larger sized files (at least 256MB), and organizing time-series data into folders partitioned by date. For more information, see [Tuning Azure Data Lake Store for performance](/azure/data-lake-store/data-lake-store-performance-tuning-guidance). However, that structure is not optimal for looking up individual records by ID. Therefore, the Delivery History services also writes the data into Cosmos DB, to enable faster lookup. 
+For optimal performance , Microsoft recommends storing data in Data Lake Stoere in larger sized files (at least 256MB), and organizing time-series data into folders partitioned by date. For more information, see [Tuning Azure Data Lake Store for performance](/azure/data-lake-store/data-lake-store-performance-tuning-guidance). However, that structure is not optimal for looking up individual records by ID. Therefore, the Delivery History service also stores data in Cosmos DB for quicker lookup. Only the fields needed to query the status of a delivery are stored in Cosmos DB. Periodically, older history data can be purged from Cosmos DB. 
 
 ### Package service
 
@@ -81,4 +79,3 @@ Finally, the Package service has two basic requirements:
 - Simple queries by package ID.
 
 The package data is not relational, so a documented oriented database is appropriate, and Cosmos DB can achieve very high throughput by using sharded collections. The team that works on the Package service is familiar with the MEAN stack (MongoDB, Express.js, AngularJS, and Node.js), so they select the [MongoDB API](/azure/cosmos-db/mongodb-introduction) for Cosmos DB. That lets them leverage their existing experience with MongoDB, while getting the benefits of Cosmos DB.
-
