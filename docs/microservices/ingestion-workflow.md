@@ -14,7 +14,7 @@ The Delivery Scheduler service is responsible for accepting user requests and ex
 
 If any of these services returns an error code or experiences a non-transient failure, the delivery cannot be scheduled. An error code might indicate an expected error condition &mdash; for example, the customer's account is suspended mdash; or an unexpected server error (HTTP 5xx). A service might also be unavailable, causing the network call to time out. 
 
-Based on business requirements, Fabrikam has identified the following non-functional requirements for ingestion:
+Based on business requirements, the development team identified the following non-functional requirements for ingestion:
 
 - Sustained throughput of 10K requests/sec.
 - Handle spikes of up to 100K/sec without dropping client requests or timing out.
@@ -30,7 +30,7 @@ A better approach is to put the incoming requests into a buffer, and let the buf
 
 ## Ingestion
 
-At the scale Fabrikam is targeting, Event Hubs is a good choice, because of its high ingestion rate. Our tests showed that ingress per event hub was about 32k ops/sec with latency around 90ms. The delivery scheduler is also capable of sharding across more than one event hub. Ingress with 2 event hubs was 45k ops/sec with latency below 100 ms. (As with all performance metrics, there can be multiple factors that affect performance, so don't interpret these numbers as a benchmark.)
+At the scale the development team is targeting, Event Hubs is a good choice, because of its high ingestion rate. Our tests showed that ingress per event hub was about 32k ops/sec with latency around 90ms. The delivery scheduler is also capable of sharding across more than one event hub. Ingress with 2 event hubs was 45k ops/sec with latency below 100 ms. (As with all performance metrics, there can be multiple factors that affect performance, so don't interpret these numbers as a benchmark.)
 
 Service Bus with premium messaging is fast, but still not as fast as Event Hubs. You can see performance results in this blog post. However, keep in mind that these results do not use Service Bus features such as deduplication, peek lock (which is needed to guarantee at-least-once delivery), or dead letter queuing. Also at this scale, Event Hubs is more cost effective than Service Bus. 
 
