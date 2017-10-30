@@ -7,7 +7,9 @@ When you design APIs for a microservice, it's important to distinguish between t
 
 These two use cases have somewhat different requirements. The public API must be compatible with client applications, typically browser applications or native mobile applications. Most of the time, that means the public API will be REST over HTTP. For the backend APIs, however, you need to take network performance into account. Depending on the granularity of your services, interservice communication can result in a lot of network traffic. Services can quickly become I/O bound. For that reason, considerations such as serialization speed and payload size become more important.
 
-Technology choices. You have to consider several aspects of how an API is implemented:
+## Technology choices
+
+You have to consider several aspects of how an API is implemented:
 
 - **REST or RPC interface**. For a RESTful interface, the most common choice is REST over HTTP using JSON. For an RPC-style interface, there are several popular frameworks, including gRPC, Appache Avro, and Apache Thrift.  
 
@@ -17,7 +19,7 @@ Technology choices. You have to consider several aspects of how an API is implem
 
 In some cases, you can mix and match options. For example, by default gRPC uses protocol buffers for serialization, but it can use other formats such as JSON.
 
-Considerations:
+## Considerations
 
 - Tradeoffs between a REST-style interface or an RPC-style interface.
 - Does the serialization format require a fixed schema? If so, do you need to compile a schema file?
@@ -30,7 +32,7 @@ Considerations:
 
 Our recommendation is to choose REST over HTTP as a baseline, unless you need the performance of a binary protocol. REST over HTTP requires no special libraries. It creates minimal coupling, because callers don't need a client stub to communicate with the service. Finally, it's compatible with browser clients, so you don’t need a protocol translation layer between the client and the backend. However, if you choose this option, you should do performance and load testing early in the development process, to validate whether it performs well enough for your scenario.
 
-## Design RESTful APIs
+## Designing RESTful APIs
 
 - Promotes loose coupling between client and server.
 - Enforces stateless communication, which improves scalability.
