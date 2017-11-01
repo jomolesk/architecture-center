@@ -38,21 +38,48 @@ Done correctly, microservices can provide a number of useful benefits:
 
 ## No free lunch
 
-These benefits don't come for free. Some of the challenges when adopting a microservices architecture include:
+These benefits don't come for free. This series of articles is designed to address some of the challenges of building microservices that are resilient, scalable, and manageable.
 
-- Design. What are the service boundaries? How big should a service be? How will services communicate?
-- Team structure. Can you successfully organize into small, semi-independent teams? Do you have a strong DevOps culture? 
-- CI/CD. You must have automated and robust CI/CD, so that you can reliably deploy the application into test and production environments.
-- Testing. The decentralized nature of building microservices requires new approaches to testing. During development, you will test an individual service against stubs or API contracts. Then perform integration testing in a production-like test environment (test cluster). Performance tests and load tests are also critical.
-- Monitoring and telemetry. A single client request may invoke multiple services. That makes it harder to get a holistic view of the system and understand the sources of bottlenecks and performance issues.
+- **Service boundaries**. When you build microservices, you need to think carefully about where to draw the boundaries between services. Once services are built and deployed in production, it can be hard to refactoring across these boundaries. Yet deciding on these boundaries is one of the big challenges in designing a microservices architecture. How big should a service be? When should functionality be factored into multiple services, or kept in the same service. In this series, we describe an approach that uses domain-driven design to find service boundaries. It starts with [Domain analysis](./domain-analysis.md) to find the bounded contexts, then applies a set of [tactical DDD patterns](./tactical-ddd.md) based on functional and non-functional requirements. 
+
+- **Complexity**. A microservices application has more moving parts. Each service is simple, but the services have to work together as a whole. A single user operation may involve multiple services. In the chapter [Ingestion and workflow](./ingestion-workflow.md), we examine some of the issues around ingesting requests at high throughput, coordinating a workflow, and handling failures. 
+
+- **Network congestion and latency**. The use of many small, granular services can result in more interservice communication and longer end-to-end latency. The chapter [Interservice communication](./interservice-communication.md) describes considerations for messaging between services. Both synchronous and asynchronous communication have a place in microservices architectures. For synchronous communication, good [API design](./api-design.md) is important so that services interoperate cleanly.
+ 
+- **Communciation between clients and the application.**  When you decompose an application into many small services, how should clients communicate with those services? Should a client call each individual service directly, or route requests through an [API Gateway](./gateway.md).
+
+- **Data consistency and integrity**. A basic principle of microservices is that each service manages its own data. This keeps services decoupled, but can lead to challenges with data integrity or redundancy. We explore some of these issues in the [Data considerations](./data-considerations.md).
+
+- **Monitoring**. Monitoring a distributed application can be a lot harder than a monolithic application, because you must correlate telemetry from multiple services. The chapter [Logging and monitoring](./logging-monitoring.md) addresses these concerns.
+
+- **CI/CD**. One of the main goals of microservices is agility. You must have automated and robust [CI/CD](./ci-cd.md), so that you can quickly and reliably deploy individual services into test and production environments. 
+
+- **Team structure**. Can you successfully organize into small, semi-independent teams? Do you have a strong DevOps culture? [Conway's law](https://en.wikipedia.org/wiki/Conway%27s_law) says that organizations create software that mirrors their organizational structure. If your team structure and processes still reflect a "monolithic app" worldview, it will be hard to achieve the agility that microservices promise. Team organization is not a topic that we explore deeply in this series, but it's something to consider before you embark on a microservices architecture.
+
+
+<!-- - **Testing**. The decentralized nature of building microservices requires new approaches to testing. During development, you will test an individual service against stubs or API contracts. Then perform integration testing in a production-like test environment (test cluster). Performance tests and load tests are also critical.  -->
 
 ## The drone delivery scenario
 
+To explore these issues, and to illustrate some of the best practices for a microservices architecture, we created a reference implmentation that we call the Drone Delivery application. 
+
+​Fabrikam, Inc. is starting a drone delivery service. The company manages a fleet of drone aircraft. Businesses register with the service, and users can request a drone to pick up goods for delivery. When a customer schedules a pickup, a backend system assigns a drone and notifies the user with an estimated delivery delivery time. While the delivery is in progress, the customer can track the location of the drone, with a continuously updated ETA.
+
+This scenario involves a fairly complicated domain. Some of the business concerns include scheduling drones, tracking packages, managing user accounts, and storing and analyzing historical data. Moreover, Fabrikam wants to get to market quickly and then iterate quickly, adding new functionality and capabilities. The application needs to operate at cloud scale, with a high SLA. Fabrikam also expects that different parts of the system will have very different requirements for data storage and querying. All of these considerations lead Fabrikam to choose a microservices architecture for the Drone Delivery application.
+
+> [!NOTE]
+> For help in choosing between a microservices architecture and other architectural styles, see the [Azure Application Architecture Guide](../guide/index.md).
+
 ## Choosing a compute option
 
+The term *compute* refers to the hosting model for the computing resources that your application runs on. The first high-level decision is choosing between an orchestrator or a serverless architecture. With an orchestrator, services run on nodes (VMs) and the orchestrator acts as a control plane. The orchestratory provides functionality such as service discovery, load balancing, configuration, scheduling (placing services on nodes), health monitoring, restarting unhealthy services, network routing, scaling, and so on. With a serverless architecture, you don't manage the VMs or the virtual network infrastructure. Instead, you deploy code and the hosting service handles putting that code onto a VM and executing it. This approach tends to favor small granular functions, that are coordinated by applying event-based triggers to functions. For example, putting a message onto a queue may trigger a function that reads from the queue.
 
+For our Drone Delivery reference implementation, we are using ACS with Kubernetes. Most of the high-level architectural decisions and challenges will apply to any container orchestrator, although specific implementation details will differ. Although we focused on Kubernetes, we did implement one of our microservices as an Azure Function. However, this guide does not focus on serverless architecture in general. 
 
+Options for using an orchestrator in Azure include:
 
+- Azure Container Service (ACS). ACS lets quickly deploy a production ready Kubernetes, DC/OS, or Docker Swarm cluster.
+- AKS (Azure Container Service). AKS is a managed Kubernetes service. AKS provisions Kubernetes and exposes the Kubernetes API endpoints, but hosts and manages the Kubernetes control plane, performing automated upgrades, automated patching, autoscaling, and other management tasks. You can think of AKS as being "Kubernetes APIs as a service." At the time of writing, AKS is still in preview. However, it's expected that AKS will become the preferred way to run Kubernetes in Azure.
+- Service Fabric. Orchestrates services that can run as containers, binary executables, or as Reliable Services. Reliable Services is a light-weight framework for writing services that integrate with the Service Fabric platform.
 
-
-
+To create a serverless architecture on Azure, use Azure Functions combined with Event Grid.

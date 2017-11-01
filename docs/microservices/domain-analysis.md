@@ -74,4 +74,3 @@ In the book *Domain Driven Design* (Addison-Wesley, 2003), Eric Evans describes 
 
 For the rest of this journey, we will focus on the Shipping bounded context. 
 
-Next: [Apply tactical DDD patterns](./tactical-ddd.md)
